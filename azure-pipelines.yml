@@ -22,5 +22,6 @@ steps:
   inputs:
     command: init
     workingDirectory: '$(System.DefaultWorkingDirectory)/v2'
+    backendType: selfConfigured
     commandOptions: --input=false --no-color
     allowTelemetryCollection: false
