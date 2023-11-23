@@ -9,11 +9,18 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  - group: Terraform-Token
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+steps:
+
+- task: TerraformInstaller@2
+  inputs:
+    terraformVersion: 'latest'
+    
+- task: TerraformCLI@2
+  inputs:
+    command: init
+    workingDirectory: '$(System.DefaultWorkingDirectory)/v2'
+    commandOptions: --input=false --no-color
+    allowTelemetryCollection: false
