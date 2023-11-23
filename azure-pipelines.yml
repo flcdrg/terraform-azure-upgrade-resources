@@ -23,7 +23,7 @@ steps:
       mv .terraformrc ~/.terraformrc
       cat ~/.terraformrc
       export TF_CLI_CONFIG_FILE="~/.terraformrc"
-    displayName: 'Terraform Cloud Credentials'
+    displayName: "Terraform Cloud Credentials"
 
   - script: ls -al
     workingDirectory: $(System.DefaultWorkingDirectory)/v2
@@ -37,5 +37,5 @@ steps:
       command: init
       workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
       backendType: selfConfigured
-      commandOptions: --input=false --no-color
+      commandOptions: -no-color -input=false
       allowTelemetryCollection: false
