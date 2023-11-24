@@ -26,4 +26,4 @@ Demonstration of how to upgrade AzureRM resources - migrating from unsupported/d
 
 1. Run `terraform login`
 1. Paste the token from the browser session into the terminal
-1. Run `terraform init` to initialize the workspace locally
+1. Run `terraform init` to initialise the workspace locally

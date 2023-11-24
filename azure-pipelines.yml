@@ -6,33 +6,22 @@ pool:
 
 variables:
   - group: Terraform-Token
-  # - name: TF_LOG
-  #   value: INFO
 
 steps:
   - script: echo "##vso[task.setvariable variable=TF_TOKEN_app_terraform_io]$(TF_TOKEN)"
     displayName: "Terraform Token"
 
-  # - script: |
-  #     RC_FILE=".terraformrc"
-  #     cat > ${RC_FILE} << EOF
-  #     credentials "app.terraform.io" {
-  #       token = "$(TF_TOKEN)"
-  #     }
-  #     EOF
-  #     mv .terraformrc ~/.terraformrc
-  #     cat ~/.terraformrc
-  #     export TF_CLI_CONFIG_FILE="~/.terraformrc"
-  #   displayName: "Terraform Cloud Credentials"
-
   - script: ls -al
+    displayName: "Script: List files"
     workingDirectory: $(System.DefaultWorkingDirectory)/v2
 
   - task: TerraformInstaller@2
+    displayName: "Terraform: Installer"
     inputs:
       terraformVersion: "latest"
 
   - task: TerraformCLI@2
+    displayName: "Terraform: init"
     inputs:
       command: init
       workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
@@ -41,6 +30,7 @@ steps:
       allowTelemetryCollection: false
 
   - task: TerraformCLI@2
+    displayName: "Terraform: plan"
     inputs:
       command: plan
       workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
