@@ -1,8 +1,10 @@
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_plan
 resource "azurerm_app_service_plan" "plan" {
   name                = "plan-tfupgrade-australiasoutheast"
   resource_group_name = data.azurerm_resource_group.group.name
   location            = data.azurerm_resource_group.group.location
   kind                = "Linux"
+  reserved            = true
   sku {
     tier = "Basic"
     size = "B1"
