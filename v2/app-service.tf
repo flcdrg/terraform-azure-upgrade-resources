@@ -25,9 +25,9 @@ resource "azurerm_app_service" "appservice" {
 
   site_config {
     always_on                 = true
-    dotnet_framework_version  = "v6.0"
     ftps_state                = "Disabled"
     http2_enabled             = true
+    linux_fx_version          = "DOTNETCORE:6.0"
     min_tls_version           = "1.2"
     use_32_bit_worker_process = false
   }
