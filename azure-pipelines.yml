@@ -32,6 +32,7 @@ jobs:
 
       - task: PublishPipelineArtifact@1
         displayName: "Publish Artifact"
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           targetPath: $(Build.ArtifactStagingDirectory)
           artifact: drop
@@ -70,3 +71,38 @@ jobs:
           workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
           commandOptions: -no-color -input=false
           allowTelemetryCollection: false
+
+      - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+        - task: TerraformCLI@2
+          displayName: "Terraform: apply"
+          inputs:
+            command: apply
+            workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+            commandOptions: -no-color -input=false -auto-approve
+            allowTelemetryCollection: false
+       
+  - job: deploy
+    displayName: Deploy to Azure Web App
+    dependsOn:
+      - terraform
+      - dotnet
+    
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: "Download Artifact"
+        inputs:
+          artifactName: drop
+          path: $(System.DefaultWorkingDirectory)/drop
+
+      - task: AzureWebApp@1
+        displayName: "Deploy Azure Web App from zip"
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+        inputs:
+          azureSubscription: Azure MSDN - rg-tfupgrade-australiasoutheast
+          appName: $(appName)
+          package: $(System.DefaultWorkingDirectory)/drop/a.zip
+          deploymentMethod: zipDeploy
+          appType: webAppLinux
+          
