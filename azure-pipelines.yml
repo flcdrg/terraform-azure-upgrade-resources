@@ -37,7 +37,7 @@ jobs:
           targetPath: $(Build.ArtifactStagingDirectory)
           artifact: drop
           publishLocation: pipeline
-  
+
   - job: terraform
     displayName: "Terraform AzureRM 2.x"
     pool:
@@ -65,42 +65,42 @@ jobs:
           allowTelemetryCollection: false
 
       - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-        - task: TerraformCLI@2
-          displayName: "Terraform: plan"
-          inputs:
-            command: plan
-            workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
-            commandOptions: -no-color -input=false
-            allowTelemetryCollection: false
+          - task: TerraformCLI@2
+            displayName: "Terraform: plan"
+            inputs:
+              command: plan
+              workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+              commandOptions: -no-color -input=false
+              allowTelemetryCollection: false
 
       - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-        - task: TerraformCLI@2
-          displayName: "Terraform: apply"
-          inputs:
-            command: apply
-            workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
-            commandOptions: -no-color -input=false -auto-approve
-            allowTelemetryCollection: false
+          - task: TerraformCLI@2
+            displayName: "Terraform: apply"
+            inputs:
+              command: apply
+              workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+              commandOptions: -no-color -input=false -auto-approve
+              allowTelemetryCollection: false
 
       - task: TerraformCLI@2
         displayName: "Terraform: output"
         inputs:
           command: output
           workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
-          commandOptions: -no-color -input=false
+          commandOptions: -no-color
           allowTelemetryCollection: false
 
       - script: |
           echo "##vso[task.setvariable variable=TF_OUT_APPSERVICE_NAME;isOutput=true]$(TF_OUT_APPSERVICE_NAME)"
         displayName: "Script: Set output variables"
         name: setOutputVar
-       
+
   - job: deploy
     displayName: Deploy to Azure Web App
     dependsOn:
       - terraform
       - dotnet
-    
+
     pool:
       vmImage: ubuntu-latest
 
@@ -124,4 +124,3 @@ jobs:
           package: $(System.DefaultWorkingDirectory)/drop/a.zip
           deploymentMethod: zipDeploy
           appType: webAppLinux
-          
