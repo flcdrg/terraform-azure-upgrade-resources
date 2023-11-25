@@ -35,3 +35,8 @@ resource "azurerm_app_service" "appservice" {
     type = "SystemAssigned"
   }
 }
+
+output "appservice_name" {
+  description = "Name of the App Service"
+  value       = azurerm_app_service.appservice.name
+}
