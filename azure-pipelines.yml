@@ -38,17 +38,19 @@ jobs:
           artifact: drop
           publishLocation: pipeline
 
-  - job: terraform
+  - job: terraformv2
     displayName: "Terraform AzureRM 2.x"
     pool:
       vmImage: ubuntu-latest
+    variables:
+      TerraformSourceDirectory: $(System.DefaultWorkingDirectory)/v2
     steps:
       - script: echo "##vso[task.setvariable variable=TF_TOKEN_app_terraform_io]$(TF_TOKEN)"
         displayName: "Terraform Token"
 
       - script: ls -al
         displayName: "Script: List files"
-        workingDirectory: $(System.DefaultWorkingDirectory)/v2
+        workingDirectory: $(TerraformSourceDirectory)
 
       - task: TerraformInstaller@2
         displayName: "Terraform: Installer"
@@ -59,7 +61,7 @@ jobs:
         displayName: "Terraform: init"
         inputs:
           command: init
-          workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+          workingDirectory: "$(TerraformSourceDirectory)"
           backendType: selfConfigured
           commandOptions: -no-color -input=false
           allowTelemetryCollection: false
@@ -69,7 +71,7 @@ jobs:
             displayName: "Terraform: plan"
             inputs:
               command: plan
-              workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+              workingDirectory: "$(TerraformSourceDirectory)"
               commandOptions: -no-color -input=false
               allowTelemetryCollection: false
 
@@ -78,7 +80,7 @@ jobs:
             displayName: "Terraform: apply"
             inputs:
               command: apply
-              workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+              workingDirectory: "$(TerraformSourceDirectory)"
               commandOptions: -no-color -input=false -auto-approve
               allowTelemetryCollection: false
 
@@ -86,7 +88,7 @@ jobs:
         displayName: "Terraform: output"
         inputs:
           command: output
-          workingDirectory: "$(System.DefaultWorkingDirectory)/v2"
+          workingDirectory: "$(TerraformSourceDirectory)"
           commandOptions: -no-color
           allowTelemetryCollection: false
 
@@ -98,7 +100,7 @@ jobs:
   - job: deploy
     displayName: Deploy to Azure Web App
     dependsOn:
-      - terraform
+      - terraformv2
       - dotnet
 
     pool:
