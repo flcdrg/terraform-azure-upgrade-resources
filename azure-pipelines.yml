@@ -108,7 +108,7 @@ jobs:
 
     variables:
       - name: appName
-        value: $[ dependencies.terraform.outputs['setOutputVar.TF_OUT_APPSERVICE_NAME'] ]
+        value: $[ dependencies.terraformv2.outputs['setOutputVar.TF_OUT_APPSERVICE_NAME'] ]
 
     steps:
       - task: DownloadPipelineArtifact@2
