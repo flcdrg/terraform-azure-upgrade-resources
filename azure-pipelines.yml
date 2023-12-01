@@ -1,5 +1,14 @@
 trigger:
-  - main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/*
+      - v2/*
+      - azure-pipelines.yml
+
+pr: none
 
 pool:
   vmImage: ubuntu-latest
