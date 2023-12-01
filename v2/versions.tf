@@ -1,15 +1,6 @@
 terraform {
   required_version = ">= 1.6.0"
 
-  cloud {
-    organization = "flcdrg"
-    hostname     = "app.terraform.io"
-
-    workspaces {
-      name = "terraform-azure-upgrade"
-    }
-  }
-
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"

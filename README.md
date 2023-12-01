@@ -2,6 +2,8 @@
 
 Demonstration of how to upgrade AzureRM resources - migrating from unsupported/deprecated resources to supported ones.
 
+[https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/3.0-upgrade-guide](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/3.0-upgrade-guide)
+
 ## Configure Terraform Cloud
 
 1. Create a [Terraform Cloud](https://app.terraform.io) account
