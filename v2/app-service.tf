@@ -27,7 +27,7 @@ resource "azurerm_app_service" "appservice" {
     always_on                 = true
     ftps_state                = "Disabled"
     http2_enabled             = true
-    linux_fx_version          = "DOTNETCORE:6.0"
+    linux_fx_version          = "DOTNETCORE|6.0"
     min_tls_version           = "1.2"
     use_32_bit_worker_process = false
   }
