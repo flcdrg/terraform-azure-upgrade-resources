@@ -11,6 +11,7 @@ variables:
 jobs:
   - job: terraformv2
     displayName: "Terraform AzureRM 2.x"
+    continueOnError: true # Errors are possible if resources have been upgraded to v3
 
     variables:
       TerraformSourceDirectory: $(System.DefaultWorkingDirectory)/v2
@@ -44,6 +45,7 @@ jobs:
     displayName: "Terraform AzureRM 3.x"
     dependsOn: terraformv2
     condition: always()
+    continueOnError: true # Errors are possible if resources not yet been upgraded to v3
 
     variables:
       TerraformSourceDirectory: $(System.DefaultWorkingDirectory)/v3
