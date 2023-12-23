@@ -6,6 +6,11 @@
 version: 2
 updates:
   - package-ecosystem: "terraform"
-    directory: "/" # Location of package manifests
+    directory: "/v2"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "terraform"
+    directory: "/v3"
     schedule:
       interval: "weekly"
