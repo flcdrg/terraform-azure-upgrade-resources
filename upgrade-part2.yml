@@ -71,6 +71,11 @@ jobs:
           if [[ " ${RESOURCES[@]} " =~ "azurerm_app_service.appservice" ]]; then
             terraform state rm azurerm_app_service.appservice
           fi
+
+          echo "Terraform resources"
+
+          # Remaining resources in Terraform state
+          terraform state list
         displayName: "Script: Remove old resources from Terraform State"
         workingDirectory: $(TerraformSourceDirectory)
 
@@ -81,20 +86,38 @@ jobs:
           workingDirectory: "$(TerraformSourceDirectory)"
           commandOptions: -no-color
 
-      - script: |
-          ARM_SUBSCRIPTION_ID=$(az account show --query "id" -o tsv)
-          ARM_RESOURCE_GROUP="rg-tfupgrade-australiasoutheast"
+      - task: AzureCLI@2
+        displayName: "AzureCLI: Import resources into Terraform State"
+        inputs:
+          azureSubscription: "Azure MSDN - rg-tfupgrade-australiasoutheast"
+          scriptType: bash
+          scriptLocation: inlineScript
+          failOnStandardError: true
+          workingDirectory: $(TerraformSourceDirectory)
+          inlineScript: |
+            ARM_SUBSCRIPTION_ID=$(az account show --query "id" -o tsv)
+            ARM_RESOURCE_GROUP=rg-tfupgrade-australiasoutheast
 
-          # Check if resource exists in Azure
-          if az appservice plan show --name plan-tfupgrade-australiasoutheast --resource-group $(ARM_RESOURCE_GROUP) --query id --output tsv > /dev/null 2>&1; then
-            terraform import azurerm_app_service_plan.plan /subscriptions/$(ARM_SUBSCRIPTION_ID)/resourceGroups/$(ARM_RESOURCE_GROUP)/providers/Microsoft.Web/serverfarms/plan-tfupgrade-australiasoutheast
-          fi
+            # Before
+            echo "Terraform resources"
+            terraform state list
 
-          if az appservice show --name app-tfupgrade-australiasoutheast --resource-group $(ARM_RESOURCE_GROUP) --query id --output tsv > /dev/null 2>&1; then
-            terraform import azurerm_app_service.appservice /subscriptions/$(ARM_SUBSCRIPTION_ID)/resourceGroups/$(ARM_RESOURCE_GROUP)/providers/Microsoft.Web/sites/app-tfupgrade-australiasoutheast
-          fi
+            # Check if resource exists in Azure
+            if az appservice plan show --name plan-tfupgrade-australiasoutheast --resource-group $ARM_RESOURCE_GROUP --query id --output tsv > /dev/null 2>&1; then
+              terraform import azurerm_service_plan.plan /subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ARM_RESOURCE_GROUP/providers/Microsoft.Web/serverfarms/plan-tfupgrade-australiasoutheast
+            else
+              echo "Resource plan-tfupgrade-australiasoutheast does not exist in Azure"
+            fi
 
-        displayName: "Script: Import resources into Terraform State"
+            if az webapp show --name appservice-tfupgrade-australiasoutheast --resource-group $ARM_RESOURCE_GROUP --query id --output tsv > /dev/null 2>&1; then
+              terraform import azurerm_linux_web_app.appservice /subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ARM_RESOURCE_GROUP/providers/Microsoft.Web/sites/appservice-tfupgrade-australiasoutheast
+            else
+              echo "Resource appservice-tfupgrade-australiasoutheast does not exist in Azure"
+            fi
+
+            echo "Terraform resources"
+            # Remaining resources in Terraform state
+            terraform state list
 
       - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
           - task: TerraformCLI@2
