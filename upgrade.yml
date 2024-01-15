@@ -1,9 +1,10 @@
 trigger: none
 
-pr:
-  branches:
-    include:
-      - main
+pr: none
+  # Uncomment this and remove 'none' to enable PR builds
+  # branches:
+  #   include:
+  #     - main
 
 pool:
   vmImage: ubuntu-latest
