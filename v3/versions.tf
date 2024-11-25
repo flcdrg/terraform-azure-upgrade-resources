@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.0, < 4"
+      version = ">= 3.0, < 4.0.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -15,4 +15,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+    
+  # Mitigate "Error: Cannot register providers: Microsoft.TimeSeriesInsights."
+  skip_provider_registration = true
 }
