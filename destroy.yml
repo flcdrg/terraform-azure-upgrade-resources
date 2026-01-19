@@ -19,7 +19,7 @@ jobs:
       - script: echo "##vso[task.setvariable variable=TF_TOKEN_app_terraform_io]$(TF_TOKEN)"
         displayName: "Terraform Token"
 
-      - task: TerraformInstaller@2
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@2
         displayName: "Terraform: Installer"
         inputs:
           terraformVersion: "latest"
@@ -53,7 +53,7 @@ jobs:
       - script: echo "##vso[task.setvariable variable=TF_TOKEN_app_terraform_io]$(TF_TOKEN)"
         displayName: "Terraform Token"
 
-      - task: TerraformInstaller@2
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@2
         displayName: "Terraform: Installer"
         inputs:
           terraformVersion: "latest"
